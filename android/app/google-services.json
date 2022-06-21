@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "644874889836",
+    "firebase_url": "https://gps-tracker-cc0cb-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "gps-tracker-cc0cb",
+    "storage_bucket": "gps-tracker-cc0cb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644874889836:android:e422bfb1009fdeef6b8649",
+        "android_client_info": {
+          "package_name": "com.example.gps_info"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "644874889836-pumi6c6889rvkhpn8o0m7ref4flshcha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0YsRbnU4cA1MPIJDHvc9JbKy7X-gVJQI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644874889836-pumi6c6889rvkhpn8o0m7ref4flshcha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
