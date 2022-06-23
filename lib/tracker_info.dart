@@ -19,8 +19,8 @@ class _TrackerInfoState extends State<TrackerInfo> {
     return Column(
       children: [
         const InfoBanner(),
-        AreaInfoStream(title: 'Latitude', text: 'lat'),
-        AreaInfoStream(title: 'Longitude', text: 'lng'),
+        CoordsInfoText(title: "Latitude", keyword: 'lat'),
+        CoordsInfoText(title: "Longitude", keyword: 'lng'),
         const AreaInfoText(title: "Speed", text: "0.03 km/h"),
         const AreaInfoText(
             title: "Distance from current Location", text: "20 m"),
@@ -83,17 +83,21 @@ class AreaInfoText extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          Text(text, style: TextStyle(color: Theme.of(context).hintColor)),
+          Text(
+            text,
+            style: TextStyle(color: Theme.of(context).hintColor),
+            textAlign: TextAlign.right,
+          ),
         ],
       ),
     );
   }
 }
 
-class AreaInfoStream extends StatelessWidget {
-  final coordsDao = CoordsMethods();
-  final String title, text;
-  AreaInfoStream({Key? key, required this.title, required this.text})
+class CoordsInfoText extends StatelessWidget {
+  final String title, keyword;
+  final coordsDao = CoordinateDao();
+  CoordsInfoText({Key? key, required this.title, required this.keyword})
       : super(key: key);
 
   @override
@@ -104,13 +108,22 @@ class AreaInfoStream extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title),
-          FirebaseAnimatedList(
-            query: coordsDao.getCoordsQuery(),
-            itemBuilder: (context, snapshot, animation, index) {
-              final json = snapshot.value as Map<dynamic, dynamic>;
-              final coords = Coordinates.fromJson(json);
-              return Text(coords.data[text].toString());
-            },
+          Expanded(
+            child: FirebaseAnimatedList(
+              shrinkWrap: true,
+              query: coordsDao.getCoordinatesQuery(),
+              itemBuilder: (context, snapshot, animation, index) {
+                final json = snapshot.value as Map<dynamic, dynamic>;
+                final value = Coordinates.fromJson(json).getList()[keyword];
+                return Text(
+                  value.toString(),
+                  style: TextStyle(
+                    color: Theme.of(context).hintColor,
+                  ),
+                  textAlign: TextAlign.right,
+                );
+              },
+            ),
           ),
         ],
       ),

@@ -2,11 +2,20 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'coordinates_model.dart';
 
-class CoordsMethods {
-  final DatabaseReference _coordsRef =
-      FirebaseDatabase.instance.ref().child('coordinates');
+class CoordinateDao {
+  final DatabaseReference _coordsRef = FirebaseDatabase.instance.ref();
 
-  Query getCoordsQuery() {
+  Query getCoordinatesQuery() {
     return _coordsRef;
+  }
+
+  Future<Coordinates> getCoords() async {
+    final snapshot = await _coordsRef.get();
+    return snapshot.value as Coordinates;
+  }
+
+  Future<DatabaseEvent> getOnce() async {
+    final snapshot = await _coordsRef.once();
+    return snapshot;
   }
 }
