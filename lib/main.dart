@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nord_theme/flutter_nord_theme.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gps_info/utils/constants.dart';
 import 'firebase_options.dart';
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
             darkTheme: NordTheme.dark().copyWith(
                 textTheme: GoogleFonts.poppinsTextTheme()
                     .apply(bodyColor: Colors.white)),
-            title: 'Material App',
+            title: 'Light Up & Locate',
             home: const TrackerHome(),
           );
         });
@@ -65,6 +66,9 @@ class TrackerHome extends StatelessWidget {
                       : ThemeMode.light;
             },
           ),
+          IconButton(
+              onPressed: () async {},
+              icon: Icon(Icons.location_searching_rounded)),
         ],
       ),
       body: Padding(

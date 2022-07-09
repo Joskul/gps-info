@@ -21,9 +21,11 @@ class _TrackerInfoState extends State<TrackerInfo> {
         const InfoBanner(),
         CoordsInfoText(title: "Latitude", keyword: 'lat'),
         CoordsInfoText(title: "Longitude", keyword: 'lng'),
-        const AreaInfoText(title: "Speed", text: "0.03 km/h"),
+        CoordsInfoText(title: "Speed", keyword: "spd", suffix: "m/s"),
         const AreaInfoText(
             title: "Distance from current Location", text: "20 m"),
+        Divider(),
+        FooterText(),
       ],
     );
   }
@@ -82,12 +84,16 @@ class AreaInfoText extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title),
-          Text(
-            text,
-            style: TextStyle(color: Theme.of(context).hintColor),
-            textAlign: TextAlign.right,
+          Flexible(
+            child: Text(
+              title,
+              softWrap: true,
+              overflow: TextOverflow.fade,
+            ),
           ),
+          Text(text,
+              style: TextStyle(color: Theme.of(context).hintColor),
+              textAlign: TextAlign.right),
         ],
       ),
     );
@@ -95,9 +101,10 @@ class AreaInfoText extends StatelessWidget {
 }
 
 class CoordsInfoText extends StatelessWidget {
-  final String title, keyword;
+  final String title, keyword, suffix;
   final coordsDao = CoordinateDao();
-  CoordsInfoText({Key? key, required this.title, required this.keyword})
+  CoordsInfoText(
+      {Key? key, required this.title, required this.keyword, this.suffix = ''})
       : super(key: key);
 
   @override
@@ -107,20 +114,59 @@ class CoordsInfoText extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title),
+          Flexible(child: Text(title)),
           Expanded(
             child: FirebaseAnimatedList(
               shrinkWrap: true,
               query: coordsDao.getCoordinatesQuery(),
               itemBuilder: (context, snapshot, animation, index) {
+                if (snapshot.value is String) return const SizedBox.shrink();
                 final json = snapshot.value as Map<dynamic, dynamic>;
                 final value = Coordinates.fromJson(json).getList()[keyword];
                 return Text(
-                  value.toString(),
+                  "$value $suffix",
                   style: TextStyle(
                     color: Theme.of(context).hintColor,
                   ),
                   textAlign: TextAlign.right,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FooterText extends StatelessWidget {
+  final coordsDao = CoordinateDao();
+  FooterText({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(defaultPadding * 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: FirebaseAnimatedList(
+              shrinkWrap: true,
+              query: coordsDao.getCoordinatesQuery(),
+              itemBuilder: (context, snapshot, animation, index) {
+                if (snapshot.value is! String) return const SizedBox.shrink();
+                String text = snapshot.value.toString();
+                String timeH = text.substring(0, 2);
+                String timeM = text.substring(2, 4);
+                String timeS = text.substring(4, 6);
+                String parsedTime = [timeH, timeM, timeS].join(":");
+                return Text(
+                  "Data updated at $parsedTime GMT",
+                  style: TextStyle(
+                    color: Theme.of(context).hintColor,
+                  ),
+                  textAlign: TextAlign.left,
                 );
               },
             ),

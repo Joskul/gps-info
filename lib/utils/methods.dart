@@ -18,4 +18,8 @@ class CoordinateDao {
     final snapshot = await _coordsRef.once();
     return snapshot;
   }
+
+  DatabaseReference getRef() {
+    return _coordsRef;
+  }
 }
