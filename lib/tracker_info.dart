@@ -39,7 +39,7 @@ class InfoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 3,
+      aspectRatio: 4,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(defaultRadius),
@@ -160,9 +160,10 @@ class FooterText extends StatelessWidget {
                 String timeH = text.substring(0, 2);
                 String timeM = text.substring(2, 4);
                 String timeS = text.substring(4, 6);
+                DateTime today = new DateTime.now();
                 String parsedTime = [timeH, timeM, timeS].join(":");
                 return Text(
-                  "Data updated at $parsedTime GMT",
+                  "Data updated on $parsedTime GMT",
                   style: TextStyle(
                     color: Theme.of(context).hintColor,
                   ),
