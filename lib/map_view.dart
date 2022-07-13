@@ -24,13 +24,15 @@ class MapView extends StatelessWidget {
           //print(snapshot.data!.snapshot.value['coordinates']);
           Coordinates coords = Coordinates.fromJson(
               snapshot.data!.snapshot.value['coordinates']);
+          final CameraPosition initialLocation = CameraPosition(
+              target: LatLng(coords.lat, coords.lng), zoom: 18.0);
 
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(defaultRadius),
             ),
             clipBehavior: Clip.antiAlias,
-            child: MapElement(coords: coords),
+            child: MapElement(initialLocation: initialLocation),
           );
         } else {
           return const Center(
@@ -46,10 +48,10 @@ class MapView extends StatelessWidget {
 class MapElement extends StatefulWidget {
   const MapElement({
     Key? key,
-    required this.coords,
+    required this.initialLocation,
   }) : super(key: key);
 
-  final Coordinates coords;
+  final CameraPosition initialLocation;
 
   @override
   State<MapElement> createState() => _MapElementState();
@@ -59,19 +61,16 @@ class _MapElementState extends State<MapElement> {
   late Marker marker;
   late Circle circle;
   late GoogleMapController _controller;
-
-  late CameraPosition initialLocation = CameraPosition(
-      target: LatLng(widget.coords.lat, widget.coords.lng), zoom: 18.0);
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
       mapType: MapType.hybrid,
-      initialCameraPosition: initialLocation,
-      markers: {
-        Marker(
-            markerId: MarkerId("Help"),
-            position: LatLng(widget.coords.lat, widget.coords.lng))
-      },
+      initialCameraPosition: widget.initialLocation,
+      // markers: {
+      //   Marker(
+      //       markerId: MarkerId("Help"),
+      //       position: LatLng(value['lat'], value['lng']))
+      // },
       // circles: Set.of((circle != null) ? [circle] : []),
       onMapCreated: (GoogleMapController controller) {
         _controller = controller;

@@ -76,72 +76,27 @@ class TrackerHome extends StatelessWidget {
         child: Center(
           child: Container(
             constraints: const BoxConstraints(maxWidth: maxWidth),
-            child: LayoutBuilder(builder: (context, constraints) {
-              if (constraints.maxWidth < 800) {
-                return MobileBody();
-              } else {
-                return DesktopBody();
-              }
-            }),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Expanded(flex: 4, child: MapView()),
+                Expanded(
+                  flex: 2,
+                  child: DefaultTextStyle(
+                    style: Theme.of(context).textTheme.headline6!,
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: defaultPadding),
+                      child: SingleChildScrollView(
+                        child: TrackerInfo(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class MobileBody extends StatelessWidget {
-  const MobileBody({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Expanded(flex: 2, child: MapView()),
-        Expanded(
-          flex: 2,
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.headline6!,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: defaultPadding),
-              child: SingleChildScrollView(
-                child: TrackerInfo(),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class DesktopBody extends StatelessWidget {
-  const DesktopBody({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Expanded(flex: 4, child: MapView()),
-        Expanded(
-          flex: 2,
-          child: DefaultTextStyle(
-            style: Theme.of(context).textTheme.headline6!,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: defaultPadding),
-              child: SingleChildScrollView(
-                child: TrackerInfo(),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
