@@ -48,7 +48,7 @@ class InfoBanner extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset('wave.gif', fit: BoxFit.cover),
+            Image.network('assets/wave.gif', fit: BoxFit.cover),
             Container(color: Theme.of(context).backgroundColor.withAlpha(128)),
             Padding(
               padding: const EdgeInsets.all(defaultPadding * 2),
@@ -160,10 +160,17 @@ class FooterText extends StatelessWidget {
                 String timeH = text.substring(0, 2);
                 String timeM = text.substring(2, 4);
                 String timeS = text.substring(4, 6);
-                DateTime today = new DateTime.now();
-                String parsedTime = [timeH, timeM, timeS].join(":");
+                String dateD = text.substring(12, 14);
+                String dateM = text.substring(14, 16);
+                String dateY = "20${text.substring(16, 18)}";
+
+                String parsedTime = "${[dateY, dateM, dateD].join('-')} ${[
+                  timeH,
+                  timeM,
+                  timeS
+                ].join(":")}";
                 return Text(
-                  "Data updated on $parsedTime GMT",
+                  "Data updated on $parsedTime UTC",
                   style: TextStyle(
                     color: Theme.of(context).hintColor,
                   ),
