@@ -127,7 +127,7 @@ class InfoBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 4,
+      aspectRatio: MediaQuery.of(context).size.width >= 800 ? 3 : 4,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(defaultRadius),
@@ -136,7 +136,7 @@ class InfoBanner extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.network('assets/wave.gif', fit: BoxFit.cover),
+            Image.asset('assets/wave.gif', fit: BoxFit.cover),
             Container(color: Theme.of(context).backgroundColor.withAlpha(128)),
             Padding(
               padding: const EdgeInsets.all(defaultPadding * 2),

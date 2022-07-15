@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gps_info/utils/marker_icon_generator.dart';
 import 'package:gps_info/utils/methods.dart';
 import 'package:location/location.dart';
 
@@ -61,12 +62,16 @@ class _MapElementState extends State<MapElement> {
   GoogleMapController? _controller = null;
   late Coordinates? userCoords = null;
 
+  late BitmapDescriptor userIcon;
+  late BitmapDescriptor trackerIcon;
+
   Location location = Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
 
   late CameraPosition initialLocation = CameraPosition(
       target: LatLng(widget.coords.lat, widget.coords.lng), zoom: 18.0);
+
   @override
   Widget build(BuildContext context) {
     markers = {
@@ -84,6 +89,20 @@ class _MapElementState extends State<MapElement> {
         });
       });
     }
+
+    setMarkerIcons() async {
+      userIcon = await MarkerGenerator(48).createBitmapDescriptorFromIconData(
+          Icons.supervised_user_circle,
+          Colors.lightBlue,
+          Colors.lightBlue,
+          Colors.lightBlue.withAlpha(64));
+
+      trackerIcon = await MarkerGenerator(64)
+          .createBitmapDescriptorFromIconData(Icons.accessibility_new,
+              Colors.red, Colors.red, Colors.red.withAlpha(64));
+    }
+
+    setMarkerIcons();
 
     return SafeArea(
       child: StreamBuilder(
@@ -111,13 +130,15 @@ class _MapElementState extends State<MapElement> {
             Marker(
               markerId: const MarkerId("Help"),
               position: latLng,
+              icon: trackerIcon,
             ),
           );
           userCoords != null
               ? markers.add(
                   Marker(
                       markerId: const MarkerId("User"),
-                      position: LatLng(userCoords!.lat, userCoords!.lng)),
+                      position: LatLng(userCoords!.lat, userCoords!.lng),
+                      icon: userIcon),
                 )
               : 0;
 
@@ -125,7 +146,7 @@ class _MapElementState extends State<MapElement> {
 
           circles.add(
             Circle(
-                circleId: const CircleId("User"),
+                circleId: const CircleId("Help"),
                 center: latLng,
                 radius: 50,
                 strokeWidth: 2,
