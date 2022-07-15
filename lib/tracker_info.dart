@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:gps_info/utils/coordinates_model.dart';
 import 'package:gps_info/utils/methods.dart';
+import 'package:location/location.dart';
 import 'utils/constants.dart';
+import 'package:geolocator/geolocator.dart';
 
 class TrackerInfo extends StatefulWidget {
   const TrackerInfo({
@@ -22,11 +24,97 @@ class _TrackerInfoState extends State<TrackerInfo> {
         CoordsInfoText(title: "Latitude", keyword: 'lat'),
         CoordsInfoText(title: "Longitude", keyword: 'lng'),
         CoordsInfoText(title: "Speed", keyword: "spd", suffix: "m/s"),
-        const AreaInfoText(
-            title: "Distance from current Location", text: "20 m"),
-        Divider(),
+        const LiveLocator(),
+        const Divider(),
         FooterText(),
       ],
+    );
+  }
+}
+
+class LiveLocator extends StatefulWidget {
+  const LiveLocator({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<LiveLocator> createState() => _LiveLocatorState();
+}
+
+class _LiveLocatorState extends State<LiveLocator> {
+  late Coordinates? userCoords = null;
+
+  Location location = Location();
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
+
+  _locateMe() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    // Track user Movements
+    location.onLocationChanged.listen((res) {
+      setState(() {
+        userCoords = Coordinates(res.latitude!, res.longitude!, res.speed!);
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(defaultPadding * 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Flexible(child: Text("Distance from you")),
+          Expanded(
+            child: FirebaseAnimatedList(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              query: CoordinateDao().getCoordinatesQuery(),
+              itemBuilder: (context, snapshot, animation, index) {
+                _locateMe();
+                if (snapshot.value is String) return const SizedBox.shrink();
+                final json = snapshot.value as Map<dynamic, dynamic>;
+                var currentCoords = Coordinates.fromJson(json);
+                final distance = userCoords != null
+                    ? Geolocator.distanceBetween(
+                            userCoords!.lat,
+                            userCoords!.lng,
+                            currentCoords.lat,
+                            currentCoords.lng)
+                        .toStringAsFixed(2)
+                    : "-1";
+                if (distance != "-1") {
+                  return Text(
+                    "~ $distance m",
+                    style: TextStyle(
+                      color: Theme.of(context).hintColor,
+                    ),
+                    textAlign: TextAlign.right,
+                  );
+                } else {
+                  return const LinearProgressIndicator();
+                }
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -118,6 +206,7 @@ class CoordsInfoText extends StatelessWidget {
           Expanded(
             child: FirebaseAnimatedList(
               shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
               query: coordsDao.getCoordinatesQuery(),
               itemBuilder: (context, snapshot, animation, index) {
                 if (snapshot.value is String) return const SizedBox.shrink();

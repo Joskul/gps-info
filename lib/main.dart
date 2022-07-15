@@ -67,7 +67,9 @@ class TrackerHome extends StatelessWidget {
             },
           ),
           IconButton(
-              onPressed: () async {},
+              onPressed: () async {
+                await Geolocator.requestPermission();
+              },
               icon: Icon(Icons.location_searching_rounded)),
         ],
       ),
