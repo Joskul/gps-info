@@ -4,6 +4,8 @@ import 'package:flutter_nord_theme/flutter_nord_theme.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gps_info/utils/constants.dart';
+import 'package:gps_info/utils/methods.dart';
+import 'package:location/location.dart';
 import 'firebase_options.dart';
 
 import 'map_view.dart';
@@ -68,7 +70,22 @@ class TrackerHome extends StatelessWidget {
           ),
           IconButton(
               onPressed: () async {
-                await Geolocator.requestPermission();
+                bool serviceEnabled = await userLocation.serviceEnabled();
+                if (!serviceEnabled) {
+                  serviceEnabled = await userLocation.requestService();
+                  if (!serviceEnabled) {
+                    return;
+                  }
+                }
+
+                PermissionStatus permissionGranted =
+                    await userLocation.hasPermission();
+                if (permissionGranted == PermissionStatus.denied) {
+                  permissionGranted = await userLocation.requestPermission();
+                  if (permissionGranted != PermissionStatus.granted) {
+                    return;
+                  }
+                }
               },
               icon: Icon(Icons.location_searching_rounded)),
         ],

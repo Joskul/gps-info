@@ -65,7 +65,6 @@ class _MapElementState extends State<MapElement> {
   late BitmapDescriptor userIcon;
   late BitmapDescriptor trackerIcon;
 
-  Location location = Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
 
@@ -83,7 +82,23 @@ class _MapElementState extends State<MapElement> {
 
     _locateMe() async {
       // Track user Movements
-      location.onLocationChanged.listen((res) {
+      _serviceEnabled = await userLocation.serviceEnabled();
+      if (!_serviceEnabled) {
+        //_serviceEnabled = await userLocation.requestService();
+        if (!_serviceEnabled) {
+          return;
+        }
+      }
+
+      _permissionGranted = await userLocation.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        //_permissionGranted = await userLocation.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          return;
+        }
+      }
+      // Track user Movements
+      userLocation.onLocationChanged.listen((res) {
         setState(() {
           userCoords = Coordinates(res.latitude!, res.longitude!, res.speed!);
         });

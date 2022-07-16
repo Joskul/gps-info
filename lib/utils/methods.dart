@@ -1,6 +1,9 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:location/location.dart';
 
 import 'coordinates_model.dart';
+
+Location userLocation = Location();
 
 class CoordinateDao {
   final DatabaseReference _coordsRef = FirebaseDatabase.instance.ref();

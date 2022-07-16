@@ -44,29 +44,28 @@ class LiveLocator extends StatefulWidget {
 class _LiveLocatorState extends State<LiveLocator> {
   late Coordinates? userCoords = null;
 
-  Location location = Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
 
   _locateMe() async {
-    _serviceEnabled = await location.serviceEnabled();
+    // Track user Movements
+    _serviceEnabled = await userLocation.serviceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+      //_serviceEnabled = await userLocation.requestService();
       if (!_serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
+    _permissionGranted = await userLocation.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      //_permissionGranted = await userLocation.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
 
-    // Track user Movements
-    location.onLocationChanged.listen((res) {
+    userLocation.onLocationChanged.listen((res) {
       setState(() {
         userCoords = Coordinates(res.latitude!, res.longitude!, res.speed!);
       });
