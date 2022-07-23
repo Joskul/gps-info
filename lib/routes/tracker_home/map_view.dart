@@ -106,18 +106,19 @@ class _MapElementState extends State<MapElement> {
     }
 
     setMarkerIcons() async {
-      userIcon =
-          await MarkerGenerator(Theme.of(context).textTheme.headline3!.fontSize)
-              .createBitmapDescriptorFromIconData(
-                  Icons.supervised_user_circle,
-                  Colors.lightBlue,
-                  Colors.lightBlue,
-                  Colors.lightBlue.withAlpha(64));
+      double size = MediaQuery.of(context).size.height *
+          MediaQuery.of(context).size.height /
+          (1920 * 1080);
+      userIcon = await MarkerGenerator(size * 100)
+          .createBitmapDescriptorFromIconData(
+              Icons.supervised_user_circle,
+              Colors.lightBlue,
+              Colors.lightBlue,
+              Colors.lightBlue.withAlpha(64));
 
-      trackerIcon =
-          await MarkerGenerator(Theme.of(context).textTheme.headline2!.fontSize)
-              .createBitmapDescriptorFromIconData(Icons.accessibility_new,
-                  Colors.red, Colors.red, Colors.red.withAlpha(64));
+      trackerIcon = await MarkerGenerator(size * 100)
+          .createBitmapDescriptorFromIconData(Icons.accessibility_new,
+              Colors.red, Colors.red, Colors.red.withAlpha(64));
     }
 
     setMarkerIcons();

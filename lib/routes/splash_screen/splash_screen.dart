@@ -74,14 +74,17 @@ class SplashBanner extends StatelessWidget {
                     size: Theme.of(context).textTheme.headline1!.fontSize,
                     color: Theme.of(context).colorScheme.error,
                   ),
-                  Text(
-                    "LightUp & Locate",
-                    style: Theme.of(context).textTheme.headline1!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground),
+                  Flexible(
+                    child: Text(
+                      "LightUp & Locate",
+                      style: Theme.of(context).textTheme.headline2!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onBackground),
+                    ),
                   ),
                 ],
               ),
+              SizedBox(height: defaultPadding * 2),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
@@ -101,7 +104,7 @@ class SplashBanner extends StatelessWidget {
                 ),
               ),
               const Spacer(flex: 3),
-              Image.network("assets/arrow.gif", scale: 2.0),
+              Image.asset("assets/arrow.gif", scale: 2.0),
             ],
           )
         ],
