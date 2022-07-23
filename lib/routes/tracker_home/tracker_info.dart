@@ -3,8 +3,9 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:gps_info/utils/coordinates_model.dart';
 import 'package:gps_info/utils/methods.dart';
 import 'package:location/location.dart';
-import 'utils/constants.dart';
 import 'package:geolocator/geolocator.dart';
+
+import '../../utils/constants.dart';
 
 class TrackerInfo extends StatefulWidget {
   const TrackerInfo({
@@ -79,7 +80,7 @@ class _LiveLocatorState extends State<LiveLocator> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Flexible(child: Text("Distance from you")),
+          const Flexible(child: Text("Distance")),
           Expanded(
             child: FirebaseAnimatedList(
               shrinkWrap: true,

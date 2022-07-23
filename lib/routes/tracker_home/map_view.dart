@@ -8,8 +8,8 @@ import 'package:gps_info/utils/marker_icon_generator.dart';
 import 'package:gps_info/utils/methods.dart';
 import 'package:location/location.dart';
 
-import 'utils/constants.dart';
-import 'utils/coordinates_model.dart';
+import '../../utils/constants.dart';
+import '../../utils/coordinates_model.dart';
 
 class MapView extends StatelessWidget {
   const MapView({
@@ -106,15 +106,18 @@ class _MapElementState extends State<MapElement> {
     }
 
     setMarkerIcons() async {
-      userIcon = await MarkerGenerator(48).createBitmapDescriptorFromIconData(
-          Icons.supervised_user_circle,
-          Colors.lightBlue,
-          Colors.lightBlue,
-          Colors.lightBlue.withAlpha(64));
+      userIcon =
+          await MarkerGenerator(Theme.of(context).textTheme.headline3!.fontSize)
+              .createBitmapDescriptorFromIconData(
+                  Icons.supervised_user_circle,
+                  Colors.lightBlue,
+                  Colors.lightBlue,
+                  Colors.lightBlue.withAlpha(64));
 
-      trackerIcon = await MarkerGenerator(64)
-          .createBitmapDescriptorFromIconData(Icons.accessibility_new,
-              Colors.red, Colors.red, Colors.red.withAlpha(64));
+      trackerIcon =
+          await MarkerGenerator(Theme.of(context).textTheme.headline2!.fontSize)
+              .createBitmapDescriptorFromIconData(Icons.accessibility_new,
+                  Colors.red, Colors.red, Colors.red.withAlpha(64));
     }
 
     setMarkerIcons();
